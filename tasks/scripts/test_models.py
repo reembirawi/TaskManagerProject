@@ -25,7 +25,7 @@ def run():
     filter_tasks_by_status(TaskStatus.OPEN.value)
     print()
 
-    print('count how many task per status:')
+    print('count tasks per status using annotate():')
     count_tasks_per_status()
     print()
 
