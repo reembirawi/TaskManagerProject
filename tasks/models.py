@@ -36,6 +36,7 @@ class Task(models.Model):
         blank=True
     )
 
+
     @log_call
     def assign(self, user: User):
         self.user = user
@@ -51,5 +52,6 @@ class Task(models.Model):
 
     class Meta:
         ordering = ["-id"]
+        db_table = "tasks"
     def __str__(self):
         return self.title
