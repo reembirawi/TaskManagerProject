@@ -1,0 +1,19 @@
+{% extends "main.html" %}
+
+{% block title %}
+  My Tasks Manager Home Page
+{% endblock %}
+
+{% block base %}
+    <div class="app-bar">
+        <div class="user-avatar">
+            <h1>Hello {{ user.username | title }}</h1>
+        </div>
+        <div class="side-bar-btn">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+{% endblock %}

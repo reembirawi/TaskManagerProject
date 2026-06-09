@@ -1,0 +1,51 @@
+{% extends "tasks/base.html" %}
+
+{% block content %}
+
+    <div class="main-content">
+        <div class="tasks-dashboard">
+            {% for task in tasks %}
+                <div class="task-box">
+                    <div class="task-box-header">
+                        <h2>{{task.title|title}}</h2>
+                        <div class="task-status-box
+                            {% if task.status == 'not-started' %}status-pending
+                            {% elif task.status == 'in-progress' %}status-progress
+                            {% elif task.status == 'done' %}status-done
+                            {% endif %}">
+                            <strong>{{ task.status }}</strong>
+                        </div>
+
+                    </div>
+                    <div class="task-box-body">
+                        <div class="task-description">
+                            {{ task.description }}
+                        </div>
+                    </div>
+                    <div class="operation-box">
+                        <a href="{% url 'edit_task' task.id %}">
+                            <div class="edit-task-box">
+                                <div class="edit-task-content">
+                                    <i class="fa-solid fa-pen"></i>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="{% url 'delete_task' task.id %}">
+                            <div class="delete-task-box">
+                                <div class="delete-task-content">
+                                    <i class="fa-solid fa-trash"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+             <div class="add-task-box">
+                <a href="{% url 'create_task' %}">
+                    <i class="fa-solid fa-circle-plus"></i>
+                </a>
+             </div>
+        </div>
+    </div>
+
+{% endblock %}

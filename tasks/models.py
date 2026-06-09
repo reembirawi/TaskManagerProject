@@ -14,13 +14,13 @@ class TaskManager(models.Manager):
         return self.filter(status=TaskStatus.OPEN.value)
 
     def in_progress(self):
-        return self.filter(status=TaskStatus.IN_PROGRESS)
+        return self.filter(status=TaskStatus.IN_PROGRESS.value)
 
     def done(self):
-        return self.filter(status=TaskStatus.DONE)
+        return self.filter(status=TaskStatus.DONE.value)
 
 class Task(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=40)
     description = models.TextField()
 
     status = models.CharField(
@@ -36,22 +36,23 @@ class Task(models.Model):
         blank=True
     )
 
+    objects = TaskManager()
 
     @log_call
     def assign(self, user: User):
         self.user = user
-        self.status = TaskStatus.IN_PROGRESS
+        self.status = TaskStatus.IN_PROGRESS.value
         self.save()
 
     @log_call
     def complete(self):
-        self.status = TaskStatus.DONE
+        self.status = TaskStatus.DONE.value
         self.save()
 
-    objects = TaskManager()
 
     class Meta:
         ordering = ["-id"]
         db_table = "tasks"
+
     def __str__(self):
         return self.title
