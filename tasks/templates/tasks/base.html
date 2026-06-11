@@ -9,9 +9,10 @@
         <div class="user-avatar">
             <h1>Hello {{ user.username | title }}</h1>
         </div>
-        <div class="side-bar-btn">
-            <i class="fa-solid fa-bars"></i>
-        </div>
+        <form action="{% url 'logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Log Out</button>
+        </form>
     </div>
 
     {% block content %}

@@ -1,0 +1,19 @@
+{% extends "main.html" %}
+
+{% block title %}
+  My Tasks Manager Login Page
+{% endblock %}
+
+{% block base %}
+<div class="main-content">
+  <div class="form-style">
+    <h2>Log In</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Log In">
+    </form>
+    <p> New user? <a href="{% url 'signup' %}"> Sign Up </a></p>
+  </div>
+</div>
+{% endblock %}
