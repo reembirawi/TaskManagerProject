@@ -2,22 +2,22 @@
 
 
 {% block content %}
+<div class="form-page">
+    <div class="form-style">
+        <form action="" method="post">
+                {% csrf_token %}
+                <p>Are you sure you want to delete "<strong>{{ task.title }}</strong>"?</p>
 
-<form action="" method="post">
-        {% csrf_token %}
-        <div class="form-style">
-            <p>Are you sure you want to delete "<strong>{{ task.title }}</strong>"?</p>
-
-            <div class="delete-cancel-btns">
-                <button type="submit" > Delete </button>
-                <div>
-                    <a href="/">
-                        <input type="button" value="cancel">
-                    </a>
+                <div class="delete-cancel-btns">
+                    <button type="submit" > Delete </button>
+                    <div>
+                        <a href="/">
+                            <input type="button" value="cancel">
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </div>
-</form>
+        </form>
+    </div>
 </div>
 
 {% endblock %}

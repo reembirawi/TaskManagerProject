@@ -38,7 +38,6 @@ body {
 
 .main-content {
     padding: 5px 20px;
-    display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -165,13 +164,14 @@ body {
 }
 
 .form-style {
-    background: #ffffff;
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    padding: 2rem 4rem;
-    max-width: 620px;
-    margin: auto;
-    text-align: justify;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 2rem 4rem;
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
+  text-align: justify;
 }
 
 .form-style label {
@@ -197,3 +197,13 @@ body {
     gap: 1.5em;
     padding: 20px 0;
 }
+/* ── Form pages (Login & Sign Up) centering ── */
+.form-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;        /* ← vertical center */
+  min-height: 100vh;          /* ← full screen height */
+  padding: 48px 20px;
+  box-sizing: border-box;
+}
+
