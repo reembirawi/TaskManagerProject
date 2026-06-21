@@ -1,67 +1,56 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from .models import Task
-from django.contrib.auth.models import User
-from .forms import TaskForm
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-@login_required()
-def home(request):
-    user = request.user
-    tasks = Task.objects.all().filter(user_id=user.id)
-    print(user.username)
-    context = {
-        'user': user,
-        'tasks': tasks,
-    }
-    return render(request=request, template_name='tasks/home.html', context=context)
+from .models import Task
 
-@login_required()
-def create_task(request):
-    user = request.user
-    if request.method == "POST":
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            title = form.cleaned_data["title"]
-            description = form.cleaned_data["description"]
-            status = form.cleaned_data["status"]
-            Task.objects.create(title=title, description=description, status=status, user=user)
-            return HttpResponseRedirect("/")
-    else:
-        form = TaskForm()
-    context = {
-        'user': user,
-        'form': form,
-    }
-    return render(request, "tasks/create_task.html", context=context)
 
-@login_required()
-def edit_task(request, id):
-    user = request.user
-    task = Task.objects.get(id=id)
-    if request.method == "POST":
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect("/")
-    else:
-        form = TaskForm(instance=task)
+@method_decorator(login_required, name="dispatch")
+class TaskListView(ListView):
+    model = Task
+    template_name = "tasks/home.html"
+    context_object_name = 'tasks'
 
-    context = {
-        'user': user,
-        'form': form,
-    }
-    return render(request, "tasks/edit_task.html", context=context)
+    def get_queryset(self):
+        status = self.kwargs.get("status")
+        if status:
+            return Task.objects.filter(
+                user=self.request.user,
+                status=status
+            )
+        else:
+            return Task.objects.filter(
+                user=self.request.user
+            )
 
-@login_required()
-def delete_task(request, id):
-    user = request.user
-    task = Task.objects.get(id=id)
-    if request.method == "POST":
-        task.delete()
-        return HttpResponseRedirect("/")
-    context = {
-        'user': user,
-        'task': task,
-    }
-    return render(request, "tasks/delete_task.html", context=context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tasks_status"] = self.kwargs.get("status")
+        return context
+
+
+@method_decorator(login_required, name="dispatch")
+class TaskCreateView(CreateView):
+    model = Task
+    fields = ["title", "description", "status"]
+    success_url = '/tasks/'
+    template_name = "tasks/create_task.html"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user  # ← assign the user before saving
+        return super().form_valid(form)
+
+
+@method_decorator(login_required, name="dispatch")
+class TaskDeleteView(DeleteView):
+    model = Task
+    success_url = '/tasks/'
+    template_name = "tasks/delete_task.html"
+
+
+@method_decorator(login_required, name="dispatch")
+class TaskUpdateView(UpdateView):
+    model = Task
+    success_url = '/tasks/'
+    fields = ["title", "description", "status"]
+    template_name = "tasks/edit_task.html"
