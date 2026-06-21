@@ -23,14 +23,14 @@
                         </div>
                     </div>
                     <div class="operation-box">
-                        <a href="{% url 'edit_task' task.id %}">
+                        <a href="{% url 'task-update' task.id %}">
                             <div class="edit-task-box">
                                 <div class="edit-task-content">
                                     <i class="fa-solid fa-pen"></i>
                                 </div>
                             </div>
                         </a>
-                        <a href="{% url 'delete_task' task.id %}">
+                        <a href="{% url 'task-delete' task.id %}">
                             <div class="delete-task-box">
                                 <div class="delete-task-content">
                                     <i class="fa-solid fa-trash"></i>
@@ -41,7 +41,7 @@
                 </div>
             {% endfor %}
              <div class="add-task-box">
-                <a href="{% url 'create_task' %}">
+                <a href="{% url 'task-create' %}">
                     <i class="fa-solid fa-circle-plus"></i>
                 </a>
              </div>
