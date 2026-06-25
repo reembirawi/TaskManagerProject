@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+
 from .decorators import log_call
 
 
@@ -7,6 +8,7 @@ class TaskStatus(models.TextChoices):
     OPEN = "not-started", "Not Started"
     IN_PROGRESS = "in-progress", "In Progress"
     DONE = "done", "Done"
+
 
 class TaskManager(models.Manager):
 
@@ -18,6 +20,7 @@ class TaskManager(models.Manager):
 
     def done(self):
         return self.filter(status=TaskStatus.DONE.value)
+
 
 class Task(models.Model):
     title = models.CharField(max_length=40)
@@ -33,22 +36,16 @@ class Task(models.Model):
         User,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
+        related_name="tasks",
     )
 
     objects = TaskManager()
 
     @log_call
-    def assign(self, user: User):
-        self.user = user
-        self.status = TaskStatus.IN_PROGRESS.value
-        self.save()
-
-    @log_call
     def complete(self):
         self.status = TaskStatus.DONE.value
         self.save()
-
 
     class Meta:
         ordering = ["-id"]

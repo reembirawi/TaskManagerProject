@@ -1,51 +1,35 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.models import User
+from rest_framework import generics
 
 from .models import Task
+from .serializers import TaskSerializer, UserSerializer
 
 
-class TaskListView(LoginRequiredMixin, ListView):
-    model = Task
-    template_name = "tasks/home.html"
-    context_object_name = 'tasks'
+class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+
+class TaskList(generics.ListCreateAPIView):
+    serializer_class = TaskSerializer
 
     def get_queryset(self):
-        status = self.kwargs.get("status")
+        queryset = Task.objects.all()
+
+        status = self.kwargs.get('status')
         if status:
-            return Task.objects.filter(
-                user=self.request.user,
-                status=status
-            )
-        else:
-            return Task.objects.filter(
-                user=self.request.user
-            )
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["tasks_status"] = self.kwargs.get("status")
-        return context
+            return queryset.filter(status=status)
+        return queryset
 
 
-class TaskCreateView(LoginRequiredMixin, CreateView):
-    model = Task
-    fields = ["title", "description", "status"]
-    success_url = '/tasks/'
-    template_name = "tasks/create_task.html"
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
-class TaskDeleteView(LoginRequiredMixin, DeleteView):
-    model = Task
-    success_url = '/tasks/'
-    template_name = "tasks/delete_task.html"
+class UserDetail(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
 
-
-class TaskUpdateView(LoginRequiredMixin, UpdateView):
-    model = Task
-    success_url = '/tasks/'
-    fields = ["title", "description", "status"]
-    template_name = "tasks/edit_task.html"
+    def get_object(self):
+        pk = self.kwargs['pk']
+        return User.objects.prefetch_related('tasks').get(pk=pk)
